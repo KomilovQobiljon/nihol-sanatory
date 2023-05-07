@@ -1,13 +1,22 @@
 import { useRef, useState } from "react";
 import { Wrapper } from "./style";
-import { notification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import axios from 'axios';
+
+import useAxios from "../../hooks/useAxios";
+import { useNotificationApi } from '../../Generic/NotificationApi';
+import useInput from "../../Generic/InputApi";
+import { useNavigate } from "react-router-dom";
+import { useSignIn } from "react-auth-kit";
 
 const Login = () => {
+  const axios = useAxios();
+  const signIn = useSignIn();
   const [ loading, setLoading ] = useState(false);
-  const phoneRef = useRef();
+  const [ phone, setPhone ] = useState();
   const passwordRef = useRef();
+  const statusChecker = useNotificationApi();
+  const { phoneFormatter } = useInput();
+  const navigate = useNavigate();
 
   const onKeyDetect = (e) => {
     if((!loading) && (e.key === 'Enter' || e.type === "click")){
@@ -17,40 +26,42 @@ const Login = () => {
 
   const onAuth = () => {
     const { phoneNumber, password } = {
-      phoneNumber: `${phoneRef.current.input.value}`,
+      phoneNumber: `${phone.replace(/[^\d]/g, "")}`,
       password: passwordRef.current.input.value
     }
     if(!password || !phoneNumber){
-      return notification.error({
-        message: "Please fill fields!",
-      })
+      return statusChecker(400);
     }
 
     setLoading(true);
 
     axios({
-      url: `${process.env.REACT_APP_MAIN_URL}/user/sign-in`,
+      url: `/user/sign-in`,
       method: "POST",
-      data: {
+      body: {
         phoneNumber: `+998${phoneNumber}`,
         password
       },
     }).then(res => {
       const { token, user } = res.data.data;
-      localStorage.setItem("userToken", token)
-      return notification.success({ message: "Successfully logged in!"})
+      localStorage.setItem("userToken", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      signIn({
+        token: token,
+        expiresIn: 60,
+        tokenType: "Bearer",
+        authState: user
+      });
+      navigate("/");
+      return statusChecker(200);
     }).catch((res)=>{
-      const response  = res.response;
-      console.log(res);
-      if(response.status === 409){
-        notification.error({
-          message: "User not found",
-          description: "Phone number or password is wrong"
-        })
-      }
+      console.log(res)
+      const status  = res.response.status;
+      return statusChecker(status);
     })
     .finally(()=>{
       setLoading(false);
+      navigate("/");
     })
   }
 
@@ -58,9 +69,13 @@ const Login = () => {
     <Wrapper>
       <Wrapper.Container>
         <Wrapper.Title>Yana bir bor salom!</Wrapper.Title>
-        <Wrapper.Description>Biz har kuni kechagidan ko'ra yaxshiroq xizmat ko'rsatishga intilamiz.</Wrapper.Description>
+        <Wrapper.Description>
+          Biz har kuni kechagidan ko'ra yaxshiroq xizmat 
+          ko'rsatishga intilamiz.
+        </Wrapper.Description>
         <Wrapper.PhoneNumber 
-          ref={phoneRef}
+          value={phone}
+          onChange={(e)=>setPhone(phoneFormatter(e.target.value))}
           addonBefore="+998" 
           bordered={false} 
           name="phoneNumber"
