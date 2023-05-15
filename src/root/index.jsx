@@ -36,8 +36,23 @@ const Root = () => {
           </RequireAuth>
         }>
         {
-          paths.map(({ id, path, element }) => 
-            <Route key={id} path={path} element={element} />
+          paths.map(({ id, path, element, hasChild, children }) => {
+            if(hasChild){
+              return <Route key={id} path={path} element={element}>
+                {children.map(({id,path,element, hasChild, children}) => {
+                  if(hasChild){
+                    return <Route key={id} path={path} element={element} >
+                      {children.map(({id,path,element})=> <Route key={id} path={path} element={element} />)}
+                    </Route>
+                  }else{
+                    return <Route key={id} path={path} element={element} />
+                  }
+                })}
+              </Route>
+            }else{
+              return <Route key={id} path={path} element={element} />
+            }
+          }
           )
         }
       </Route>

@@ -23,28 +23,28 @@ const Home = () => {
       <Wrapper.CardContainer>
         <Card 
           onClick={() => navigateHandler("all-users")} 
-          title={"All Users"} img={allUsers}
+          title={t("home_page.cards.all_users")} img={allUsers}
         />
         <Card 
           onClick={() => navigateHandler("half-time")} 
-          title={"Half time"} img={halfTime}
+          title={t("home_page.cards.half_time")} img={halfTime}
         />
       </Wrapper.CardContainer>
       <Wrapper.CardContainer>
         <Card 
           onClick={() => navigateHandler("time-up")} 
-          title={"Time Up"} img={timeUp}
+          title={t("home_page.cards.time_up")} img={timeUp}
         />
         <Card 
-          onClick={() => navigateHandler("empty-places")} 
-          title={"Empty Places"} img={emptyPlaces}
+          onClick={() => navigateHandler("building-types")} 
+          title={t("home_page.cards.empty_places")} img={emptyPlaces}
         />
       </Wrapper.CardContainer>
-      <Title>Reports:</Title>
+      <Title>{t("home_page.reports_title")}:</Title>
       <Wrapper.CardContainer>
         <Card 
           onClick={() => navigateHandler("report")} 
-          title={"Report"} img={report}
+          title={t("home_page.cards.report")} img={report}
         />
       </Wrapper.CardContainer>
     </Wrapper>

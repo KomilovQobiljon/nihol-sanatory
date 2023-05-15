@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Modal, Segmented } from 'antd';
+import { Modal, Segmented, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
+import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import { switchLocaleModalVisibility } from '../../../redux/modalSlice';
 import useLanguageApi from '../../../Generic/LanguageApi';
 import { Wrapper } from './style';
-import i18n from 'i18next';
 
 const UserModal = () => {
+  const { t } = useTranslation();
   const [ localeState, setLocaleState ] = useState("");
   const { lang } = useSelector(state => state.locale);
   const { localeModalVisibility } = useSelector((state) => state.modal);
@@ -20,14 +22,23 @@ const UserModal = () => {
     i18n.changeLanguage(localeState);
     return onCancel();
   };
+  const footer = [
+    <Button key="back" onClick={onCancel}>
+      {t("modals.change_languages.cancel_btn")}
+    </Button>,
+    <Button key="submit" type="primary" onClick={switchLanguage}>
+      {t("modals.change_languages.edit_btn")}
+    </Button>,
+  ]
   
   return (
     <Modal 
-      title="Change language" 
-      open={localeModalVisibility} 
-      onOk={switchLanguage} 
-      onCancel={onCancel} 
+      title={t("modals.change_languages.title")}
+      open={localeModalVisibility}
       okButtonProps={{ disabled: false }}
+      onOk={switchLanguage}
+      onCancel={onCancel}
+      footer={footer}
     >
       <Wrapper>
         <Segmented 

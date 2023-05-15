@@ -2,6 +2,7 @@ import { SettingOutlined, TranslationOutlined, LogoutOutlined } from '@ant-desig
 import { useDispatch } from 'react-redux';
 import { Modal } from 'antd';
 import { useSignOut } from 'react-auth-kit';
+import { useTranslation } from 'react-i18next';
 
 import { switchProfileModalVisibility, switchLocaleModalVisibility } from '../../redux/modalSlice';
 
@@ -12,11 +13,13 @@ const useDropDownApi = () => {
   const dispatch = useDispatch();
   const signOut = useSignOut();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const confirm = () => {
     Modal.confirm({
-      title: 'Warning',
-      content: 'Are you sure?',
-      okText: "Logout",
+      title: `${t("modals.log_out.title")}`,
+      content: `${t("modals.log_out.message")}`,
+      okText: `${t("modals.log_out.logout_btn")}`,
+      cancelText: `${t("modals.log_out.cancel_btn")}`,
       okButtonProps: {
         danger: true,
       },
@@ -31,18 +34,18 @@ const useDropDownApi = () => {
     return [
       {
         label: <MenuWrapper onClick={()=>dispatch(switchProfileModalVisibility())}>
-          <SettingOutlined /> Settings
+          <SettingOutlined /> {t("home_page.dropdown_settings")}
         </MenuWrapper>,
         key: '0',
       },
       {
         label: <MenuWrapper onClick={()=>dispatch(switchLocaleModalVisibility())} >
-          <TranslationOutlined />Change language
+          <TranslationOutlined />{t("home_page.dropdown_changelang")}
         </MenuWrapper>,
         key: '1',
       },
       {
-        label: <MenuWrapper isDanger={true} onClick={confirm}><LogoutOutlined />Exit</MenuWrapper>,
+        label: <MenuWrapper isDanger={true} onClick={confirm}><LogoutOutlined />{t("home_page.dropdown_logout")}</MenuWrapper>,
         key: '2',
       },
     ];

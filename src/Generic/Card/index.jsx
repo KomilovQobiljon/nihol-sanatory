@@ -7,7 +7,7 @@ const Card = ({ title, img, onClick }) => {
       <Title>
         {title}
       </Title>
-      <Image src={img} />
+      <Image src={img} alt={title} />
     </Wrapper>
   )
 }

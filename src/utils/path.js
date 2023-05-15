@@ -4,7 +4,10 @@ import AllUsers from '../components/AllUsers';
 import HalfTime from '../components/HalfTime';
 import TimeUp from '../components/TimeUp';
 import BuildingTypes from '../components/BuildingTypes';
-import EmptyPlaces from '../components/EmptyPlaces';
+import OrdinaryRooms from '../components/BuildingTypes/OrdinaryRooms';
+import LuxuryRooms from '../components/BuildingTypes/LuxuryRooms';
+import Cottages from '../components/BuildingTypes/Cottages';
+import SecondBuilding from '../components/Buildings/SecondBuilding';
 
 export const paths = [
   {
@@ -34,12 +37,33 @@ export const paths = [
   },
   {
     id: 5,
-    path: "/empty-places",
-    element: <EmptyPlaces/>
-  },
-  {
-    id: 6,
     path: "/building-types",
-    element: <BuildingTypes/>
+    element: <BuildingTypes/>,
+    hasChild: true,
+    children: [
+      {
+        id: 5-1,
+        path: "ordinary-rooms",
+        element: <OrdinaryRooms/>,
+        hasChild: true,
+        children: [
+          {
+            id: 5-1-1,
+            path: "2",
+            element: <SecondBuilding/>
+          }
+        ]
+      },
+      {
+        id: 5-2,
+        path: "luxury-rooms",
+        element: <LuxuryRooms/>
+      },
+      {
+        id: 5-3,
+        path: "cottages",
+        element: <Cottages/>
+      }
+    ]
   },
 ]
